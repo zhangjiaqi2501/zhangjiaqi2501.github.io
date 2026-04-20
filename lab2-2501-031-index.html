@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>图书商城</title>
+        <link rel="stylesheet" href="../css/lab2-2501-031-index.css">
+</head>
+<body>
+    <!-- 头部区域：Logo + 导航菜单（固定+浮动） -->
+    <header>
+        <div class="logo">图书商城</div>
+        <nav>
+            <ul>
+                <li><a href="#">首页</a></li>
+                <li><a href="#">新书上市</a></li>
+                <li><a href="#">热门推荐</a></li>
+                <li><a href="#">分类浏览</a></li>
+                <li><a href="#">关于我们</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主体容器 -->
+    <div class="container">
+        <!-- 左侧栏：图书分类导航（相对定位） -->
+        <div class="left-bar box">
+            <h3>图书分类</h3>
+            <ul>
+                <li>文学小说</li>
+                <li>历史传记</li>
+                <li>科技计算机</li>
+                <li>少儿读物</li>
+                <li>生活艺术</li>
+                <li>经管励志</li>
+            </ul>
+        </div>
+
+        <!-- 中间栏：图书展示区 -->
+        <div class="middle-bar box">
+            <!-- 热门推荐：浮动排列 -->
+            <div class="hot-books">
+                <h3>热门推荐</h3>
+                <div class="book-list">
+                    <!-- 第一排第一列：鼠标悬停效果（父相子绝） -->
+                    <div class="book-item first">
+                        <img src="../img/活着.png" alt="活着">
+                        <div class="book-name">活着</div>
+                        <div class="price">¥29.9</div>
+                        <!-- 绝对定位的悬停内容 -->
+                        <div class="book-hover">点击查看详情</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/平凡的世界.png" alt="平凡的世界">
+                        <div class="book-name">平凡的世界</div>
+                        <div class="price">¥59.8</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/三体.png" alt="三体">
+                        <div class="book-name">三体</div>
+                        <div class="price">¥45.0</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/明朝那些事儿.png" alt="明朝那些事儿">
+                        <div class="book-name">明朝那些事儿</div>
+                        <div class="price">¥99.0</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/长安的荔枝.png" alt="长安的荔枝">
+                        <div class="book-name">长安的荔枝</div>
+                        <div class="price">¥29.9</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="/img/蛤蟆先生去看心理医生.png" alt="蛤蟆先生去看心理医生">
+                        <div class="book-name">蛤蟆先生去看心理医生</div>
+                        <div class="price">¥59.8</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新书上市：Table布局 -->
+            <div class="new-books">
+                <h3>新书上市</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>书名</th>
+                            <th>作者</th>
+                            <th>价格</th>
+                            <th>出版时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>长安的荔枝</td>
+                            <td>马伯庸</td>
+                            <td>¥39.8</td>
+                            <td>2025-01</td>
+                        </tr>
+                        <tr>
+                            <td>置身事内</td>
+                            <td>兰小欢</td>
+                            <td>¥49.0</td>
+                            <td>2025-02</td>
+                        </tr>
+                        <tr>
+                            <td>蛤蟆先生去看心理医生</td>
+                            <td>罗伯特·戴博德</td>
+                            <td>¥49.8</td>
+                            <td>2025-03</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 右侧栏：促销信息（固定定位） -->
+        <div class="right-bar box">
+            <h3>限时促销</h3>
+            <div class="promo-item">
+                
+                <p>全场满99减30，满199减80</p>
+            </div>
+            <div class="promo-item">
+                
+                <p>新书首发5折起，限时抢购</p>
+            </div>
+            <div class="promo-item">
+                
+                <p>会员专享8折，积分抵现</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        © 2025 图书商城 版权所有
+    </footer>
+</body>
+</html>
