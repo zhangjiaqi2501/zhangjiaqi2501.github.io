@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>春韵图书商城</title>
+    <link rel="stylesheet" href="../实验4/css/lab4-2501-031-index.css">
+
+    <style>
+        /* ======================
+           原有登录/注册样式（未改动）
+           ====================== */
+        .login-mask {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+        }
+
+        .login-dialog {
+            position: relative;
+            width: 400px;
+            margin: 150px auto;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .tab-header {
+            display: flex;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+        }
+
+        .tab-header div {
+            flex: 1;
+            cursor: pointer;
+            font-size: 16px;
+            color: #666;
+            background: #f8f8f8;
+        }
+
+        .tab-header div.active {
+            background: #fff;
+            color: #f40;
+            font-weight: bold;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-item {
+            margin-bottom: 20px;
+        }
+
+        .form-item label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-item input {
+            width: 100%;
+            height: 40px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 40px;
+            background: #f40;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #ff5500;
+        }
+
+        .msg-tip {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .login-btn {
+            color: #f40 !important;
+            font-weight: bold;
+        }
+
+        /* =========================
+           实验4 新增动画效果
+           ========================= */
+
+        /* 1️⃣ 热门图书动效：右移 + 放大 + 阴影 */
+        .book-item {
+            transition: all 0.4s ease;
+        }
+
+        .book-item:hover {
+            transform: translateX(8px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+        }
+
+        /* 2️⃣ 改进版轮播图（从下向上） */
+        .carousel {
+            height: 220px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .carousel-inner {
+            position: relative;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateY(100%);
+        }
+
+        .slide:nth-child(1) {
+            animation: slideUp 6s ease forwards;
+        }
+
+        .slide:nth-child(2) {
+            animation: slideUp 6s ease forwards;
+            animation-delay: 2s;
+        }
+
+        .slide:nth-child(3) {
+            animation: slideUp 6s ease forwards;
+            animation-delay: 4s;
+        }
+
+        @keyframes slideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+        }
+
+        /* 3️⃣ 按钮动效：渐变 + 缩放 */
+        .submit-btn {
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            transform: scale(1.08);
+        }
+
+        /* 4️⃣ 图标旋转 */
+        .icon {
+            display: inline-block;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+        }
+
+        .icon:hover {
+            transform: rotate(360deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 登录/注册弹窗 -->
+    <div class="login-mask" id="loginMask">
+        <div class="login-dialog">
+            <span class="close-btn" id="closeBtn">&times;</span>
+            <div class="tab-header">
+                <div class="login-tab active">登录</div>
+                <div class="register-tab">注册</div>
+            </div>
+
+            <div class="form-container login-form">
+                <div class="form-item">
+                    <label>用户名</label>
+                    <input type="text" id="loginUsername" placeholder="请输入用户名">
+                </div>
+                <div class="form-item">
+                    <label>密码</label>
+                    <input type="password" id="loginPwd" placeholder="请输入密码">
+                </div>
+                <button class="submit-btn" id="loginBtn">登录</button>
+                <div class="msg-tip" id="loginTip"></div>
+            </div>
+
+            <div class="form-container register-form" style="display: none;">
+                <div class="form-item">
+                    <label>用户名</label>
+                    <input type="text" id="regUsername" placeholder="请输入用户名">
+                </div>
+                <div class="form-item">
+                    <label>密码</label>
+                    <input type="password" id="regPwd" placeholder="请输入密码">
+                </div>
+                <div class="form-item">
+                    <label>确认密码</label>
+                    <input type="password" id="regConfirmPwd" placeholder="请再次输入密码">
+                </div>
+                <button class="submit-btn" id="registerBtn">注册</button>
+                <div class="msg-tip" id="regTip"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="logo">图书商城</div>
+        <nav>
+            <ul>
+                <li><a href="#">首页</a></li>
+                <li><a href="#">新书上市</a></li>
+                <li><a href="#">热门推荐</a></li>
+                <li><a href="#">分类浏览</a></li>
+                <li><span class="icon search">🔍</span></li>
+                <li><span class="icon cart">🛒</span></li>
+                <li><a href="#" class="login-btn" id="openLogin">登录/注册</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主体 -->
+    <div class="container">
+
+        <!-- 左侧 -->
+        <div class="left-bar box">
+            <h3>图书分类</h3>
+            <ul>
+                <li>文学小说</li>
+                <li>历史传记</li>
+                <li>科技计算机</li>
+                <li>少儿读物</li>
+                <li>生活艺术</li>
+                <li>经管励志</li>
+            </ul>
+        </div>
+
+        <!-- 中间 -->
+        <div class="middle-bar box">
+
+            <!-- 轮播图 -->
+            <div class="carousel">
+                <div class="carousel-inner">
+                    <img src="../img/活着.png" class="slide">
+                    <img src="../img/三体.png" class="slide">
+                    <img src="../img/长安的荔枝.png" class="slide">
+                </div>
+            </div>
+
+            <!-- 热门推荐 -->
+            <div class="hot-books">
+                <h3>热门推荐</h3>
+                <div class="book-list">
+                    <div class="book-item first">
+                        <img src="../img/活着.png" alt="活着">
+                        <div class="book-name">活着</div>
+                        <div class="price">¥29.9</div>
+                        <div class="book-hover">点击查看详情</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/平凡的世界.png" alt="平凡的世界">
+                        <div class="book-name">平凡的世界</div>
+                        <div class="price">¥59.8</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/三体.png" alt="三体">
+                        <div class="book-name">三体</div>
+                        <div class="price">¥45.0</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/明朝那些事儿.png" alt="明朝那些事儿">
+                        <div class="book-name">明朝那些事儿</div>
+                        <div class="price">¥99.0</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/长安的荔枝.png" alt="长安的荔枝">
+                        <div class="book-name">长安的荔枝</div>
+                        <div class="price">¥29.9</div>
+                    </div>
+                    <div class="book-item">
+                        <img src="../img/蛤蟆先生去看心理医生.png" alt="蛤蟆先生去看心理医生">
+                        <div class="book-name">蛤蟆先生去看心理医生</div>
+                        <div class="price">¥59.8</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 新书上市 -->
+            <div class="new-books">
+                <h3>新书上市</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>书名</th>
+                            <th>作者</th>
+                            <th>价格</th>
+                            <th>出版时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>长安的荔枝</td>
+                            <td>马伯庸</td>
+                            <td>¥39.8</td>
+                            <td>2025-01</td>
+                        </tr>
+                        <tr>
+                            <td>置身事内</td>
+                            <td>兰小欢</td>
+                            <td>¥49.0</td>
+                            <td>2025-02</td>
+                        </tr>
+                        <tr>
+                            <td>蛤蟆先生去看心理医生</td>
+                            <td>罗伯特·戴博德</td>
+                            <td>¥49.8</td>
+                            <td>2025-03</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 右侧 -->
+        <div class="right-bar box">
+            <h3>限时促销</h3>
+            <div class="promo-item">
+                <p>全场满99减30，满199减80</p>
+            </div>
+            <div class="promo-item">
+                <p>新书首发5折起，限时抢购</p>
+            </div>
+            <div class="promo-item">
+                <p>会员专享8折，积分抵现</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        © 2025 图书商城 版权所有
+    </footer>
+
+    <!-- JS（完全未改动） -->
+    <script>
+        const loginMask = document.getElementById('loginMask');
+        const openLogin = document.getElementById('openLogin');
+        const closeBtn = document.getElementById('closeBtn');
+
+        openLogin.addEventListener('click', function(e) {
+            e.preventDefault();
+            loginMask.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', function() {
+            loginMask.style.display = 'none';
+            clearForm();
+        });
+
+        const loginTab = document.querySelector('.login-tab');
+        const registerTab = document.querySelector('.register-tab');
+        const loginForm = document.querySelector('.login-form');
+        const registerForm = document.querySelector('.register-form');
+
+        loginTab.addEventListener('click', function() {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            clearForm();
+        });
+
+        registerTab.addEventListener('click', function() {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.style.display = 'block';
+            loginForm.style.display = 'none';
+            clearForm();
+        });
+
+        const registerBtn = document.getElementById('registerBtn');
+        const regUsername = document.getElementById('regUsername');
+        const regPwd = document.getElementById('regPwd');
+        const regConfirmPwd = document.getElementById('regConfirmPwd');
+        const regTip = document.getElementById('regTip');
+
+        registerBtn.addEventListener('click', function() {
+            const username = regUsername.value.trim();
+            const pwd = regPwd.value.trim();
+            const confirmPwd = regConfirmPwd.value.trim();
+
+            if (!username || !pwd || !confirmPwd) {
+                regTip.className = 'msg-tip error';
+                regTip.innerText = '请填写完整信息';
+                return;
+            }
+
+            if (pwd !== confirmPwd) {
+                regTip.className = 'msg-tip error';
+                regTip.innerText = '两次密码输入不一致';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (users[username]) {
+                regTip.className = 'msg-tip error';
+                regTip.innerText = '用户名已被注册';
+                return;
+            }
+
+            users[username] = pwd;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            regTip.className = 'msg-tip success';
+            regTip.innerText = '注册成功！请登录';
+
+            setTimeout(() => {
+                loginTab.click();
+            }, 1000);
+        });
+
+        const loginBtn = document.getElementById('loginBtn');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPwd = document.getElementById('loginPwd');
+        const loginTip = document.getElementById('loginTip');
+
+        loginBtn.addEventListener('click', function() {
+            const username = loginUsername.value.trim();
+            const pwd = loginPwd.value.trim();
+
+            if (!username || !pwd) {
+                loginTip.className = 'msg-tip error';
+                loginTip.innerText = '请输入用户名和密码';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            if (!users[username]) {
+                loginTip.className = 'msg-tip error';
+                loginTip.innerText = '用户不存在，请先注册';
+                return;
+            }
+
+            if (users[username] !== pwd) {
+                loginTip.className = 'msg-tip error';
+                loginTip.innerText = '密码错误';
+                return;
+            }
+
+            loginTip.className = 'msg-tip success';
+            loginTip.innerText = '登录成功！';
+            setTimeout(() => {
+                loginMask.style.display = 'none';
+                clearForm();
+                document.getElementById('openLogin').innerText = '欢迎，' + username;
+            }, 1000);
+        });
+
+        function clearForm() {
+            loginUsername.value = '';
+            loginPwd.value = '';
+            regUsername.value = '';
+            regPwd.value = '';
+            regConfirmPwd.value = '';
+            loginTip.innerText = '';
+            regTip.innerText = '';
+        }
+    </script>
+
+</body>
+</html>
